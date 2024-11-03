@@ -50,6 +50,9 @@ jobs:
         generate-branches-badge: true
         branches-badge-filename: branches.svg
         jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
 
     - name: Check badge creation
       run: ls -l .github/badges
