@@ -62,8 +62,9 @@ jobs:
       with:
         author_email: '41898282+github-actions[bot]@users.noreply.github.com'
         message: 'Update JaCoCo badges'
-        token: ${{ secrets.ACTIONS_TOKEN }}
+        github_token: ${{ secrets.GITHUB_TOKEN }}
         add: '.github/badges/*.svg'
+
 
           
 
