@@ -37,6 +37,9 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: xvfb-run ./gradlew build
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        PR_URL: ${{ github.event.pull_request.html_url }}
 
     - name: Generate JaCoCo Badge
       uses: cicirello/jacoco-badge-generator@v2
