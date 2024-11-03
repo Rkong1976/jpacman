@@ -13,12 +13,17 @@ on:
   pull_request:
     branches: [ "master" ]
 
+permissions:
+  contents: write
+  packages: write
+
+
 jobs:
   build:
 
     runs-on: ubuntu-latest
     permissions:
-      contents: read
+      contents: write
 
     steps:
     - uses: actions/checkout@v3
@@ -32,6 +37,31 @@ jobs:
       run: chmod +x gradlew
     - name: Build with Gradle
       run: xvfb-run ./gradlew build
+
+
+
+    - name: Generate JaCoCo Badge
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        badges-directory: .github/badges
+        generate-coverage-badge: true
+        coverage-badge-filename: jacoco.svg
+        generate-branches-badge: true
+        branches-badge-filename: branches.svg
+        jacoco-csv-file: build/reports/jacoco/test/jacocoTestReport.csv
+
+    - name: Check badge creation
+      run: ls -l .github/badges
+      
+    - name: Commit changes
+      uses: EndBug/add-and-commit@v9
+      with:
+          default_author: github_actions
+          message: 'Updated JaCoCo badges'
+          add: '.github/badges/*.svg'
+    - name: Show test results
+      run: cat build/reports/jacoco/test/jacocoTestReport.csv
+
 
 
     # Configure Gradle for optimal use in GitHub Actions, including caching of downloaded dependencies.
@@ -60,12 +90,12 @@ jobs:
       contents: write
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Set up JDK 17
-      uses: actions/setup-java@v4
+    - uses: actions/checkout@v3
+    - name: Set up JDK 11
+      uses: actions/setup-java@v3
       with:
-        java-version: '17'
-        distribution: 'temurin'
+        java-version: '11'
+        distribution: 'adopt'
 
     # Generates and submits a dependency graph, enabling Dependabot Alerts for all project dependencies.
     # See: https://github.com/gradle/actions/blob/main/dependency-submission/README.md
